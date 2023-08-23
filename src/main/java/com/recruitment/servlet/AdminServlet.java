@@ -1,9 +1,6 @@
 package com.recruitment.servlet;
 
 import com.recruitment.ProjectFactory;
-import com.recruitment.ReimbursementService;
-import com.recruitment.model.Reimbursement;
-import com.recruitment.model.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,9 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,52 +50,78 @@ public class AdminServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ReimbursementService reimbursementService = projectFactory.getReimbursementService();
+        PrintWriter adminPage = resp.getWriter();
+        String title = "Admin page";
+
         String strDailyAllowance = req.getParameter("daily_allowance");
         String strRefundPerMile = req.getParameter("refund_per_mile");
         String strReimbursementLimit = req.getParameter("reimbursement_limit");
         String strDistanceLimit = req.getParameter("distance_limit");
 
         List<String> errors = new ArrayList<>();
-        int dailyAllowance = 0;
-        double refundPerMile = 0.0;
-        int reimbursementLimit = 0;
-        int distanceLimit = 0;
-        try {
-            dailyAllowance = Integer.parseInt(strDailyAllowance);
-        } catch (NumberFormatException exception) {
-            errors.add("Daily allowance must be integer.");
+        double dailyAllowance = ProjectFactory.INSTANCE.getExpensesConfig().getDailyAllowance();
+        double refundPerMile = ProjectFactory.INSTANCE.getExpensesConfig().getCarMileage();
+        double reimbursementLimit = ProjectFactory.INSTANCE.getExpensesConfig().getReimbursementLimit();
+        int distanceLimit = ProjectFactory.INSTANCE.getExpensesConfig().getDistanceLimit();
+        if (strDailyAllowance != null && !strDailyAllowance.isEmpty()) {
+            try {
+                dailyAllowance = Double.parseDouble(strDailyAllowance);
+                ProjectFactory.INSTANCE.getExpensesConfig().setDailyAllowance(dailyAllowance);
+            } catch (NumberFormatException exception) {
+                errors.add("Daily allowance must be double.");
+            }
         }
-        try {
-            refundPerMile = Double.parseDouble(strRefundPerMile);
-        } catch (NumberFormatException exception) {
-            errors.add("Refund per mile must be float.");
+        if (strRefundPerMile != null && !strRefundPerMile.isEmpty()) {
+            try {
+                refundPerMile = Double.parseDouble(strRefundPerMile);
+                ProjectFactory.INSTANCE.getExpensesConfig().setCarMileage(refundPerMile);
+            } catch (NumberFormatException exception) {
+                errors.add("Refund per mile must be float.");
+            }
         }
-        try {
-            carMileage = Integer.parseInt(strCarMileage);
-        } catch (NumberFormatException exception) {
-            errors.add("Car mileage must be integer.");
+        if (strReimbursementLimit != null && !strReimbursementLimit.isEmpty()) {
+            try {
+                reimbursementLimit = Double.parseDouble(strReimbursementLimit);
+                ProjectFactory.INSTANCE.getExpensesConfig().setReimbursementLimit(reimbursementLimit);
+            } catch (NumberFormatException exception) {
+                errors.add("Reimbursement limit must be double.");
+            }
         }
-        PrintWriter reimbursementPage = resp.getWriter();
-        String title = "Reimbursement page";
+        if (strDistanceLimit != null && !strDistanceLimit.isEmpty()) {
+            try {
+                distanceLimit = Integer.parseInt(strDistanceLimit);
+                ProjectFactory.INSTANCE.getExpensesConfig().setDistanceLimit(distanceLimit);
+            } catch (NumberFormatException exception) {
+                errors.add("Distance limit must be integer.");
+            }
+        }
 
-        reimbursementPage.println(
+
+
+        adminPage.println(
                 "<html>\n" +
                         "<head><title>" + title + "</title></head>\n" +
                         "<body>\n");
         if (errors.isEmpty()) {
-            reimbursementService.createReimbursement(new User("Ania"), date, duration, null, carMileage);
+            adminPage.println(
+                "<p>Limits:\n" +
+                        "<ul>\n" +
+                    "<li>Daily allowance: " + dailyAllowance +"\n" +
+                    "<li>Refund per mile: " + refundPerMile +"\n" +
+                    "<li>Reimbursement limit: "+ reimbursementLimit +"\n" +
+                    "<li>Distance limit: " + distanceLimit +"\n");
+
         } else {
-            reimbursementPage.println(
+            adminPage.println(
                     "<p>Errors:\n" +
                             "<ul>\n");
             for (String error: errors
             ) {
-                reimbursementPage.println("<li>"+ error +"\n");
+                adminPage.println("<li>"+ error +"\n");
             }
-            reimbursementPage.println("</ul>\n");
+            adminPage.println("</ul>\n");
         }
-        reimbursementPage.println("</body></html>");
+        adminPage.println("</body></html>");
     }
 
 }

@@ -9,6 +9,8 @@ import java.util.Set;
 public class ExpensesConfig {
     private double dailyAllowance = 15.0;
     private double carMileage = 0.3;
+    double reimbursementLimit = Integer.MAX_VALUE;
+    int distanceLimit = Integer.MAX_VALUE;
     Set<ReceiptKind> receiptKindSet = new HashSet<>(List.of(
             new ReceiptKind("Taxi"),
             new ReceiptKind("Hotel"),
@@ -42,5 +44,21 @@ public class ExpensesConfig {
 
     public void removeReceiptKind(ReceiptKind receiptKind) {
         receiptKindSet.remove(receiptKind);
+    }
+
+    public double getReimbursementLimit() {
+        return reimbursementLimit;
+    }
+
+    public void setReimbursementLimit(double reimbursementLimit) {
+        this.reimbursementLimit = reimbursementLimit;
+    }
+
+    public int getDistanceLimit() {
+        return distanceLimit;
+    }
+
+    public void setDistanceLimit(int distanceLimit) {
+        this.distanceLimit = distanceLimit;
     }
 }
