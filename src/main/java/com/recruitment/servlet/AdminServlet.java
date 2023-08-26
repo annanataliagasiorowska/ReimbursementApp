@@ -95,9 +95,6 @@ public class AdminServlet extends HttpServlet {
                 errors.add("Distance limit must be integer.");
             }
         }
-
-
-
         adminPage.println(
                 "<html>\n" +
                         "<head><title>" + title + "</title></head>\n" +
@@ -106,11 +103,10 @@ public class AdminServlet extends HttpServlet {
             adminPage.println(
                 "<p>Limits:\n" +
                         "<ul>\n" +
-                    "<li>Daily allowance: " + dailyAllowance +"\n" +
-                    "<li>Refund per mile: " + refundPerMile +"\n" +
-                    "<li>Reimbursement limit: "+ reimbursementLimit +"\n" +
-                    "<li>Distance limit: " + distanceLimit +"\n");
-
+                    "<li>Daily allowance: " + ProjectFactory.INSTANCE.getExpensesConfig().getDailyAllowance() +"\n" +
+                    "<li>Refund per mile: " + ProjectFactory.INSTANCE.getExpensesConfig().getCarMileage() +"\n" +
+                    "<li>Reimbursement limit: "+ ProjectFactory.INSTANCE.getExpensesConfig().getReimbursementLimit() +"\n" +
+                    "<li>Distance limit: " + ProjectFactory.INSTANCE.getExpensesConfig().getDistanceLimit() +"\n");
         } else {
             adminPage.println(
                     "<p>Errors:\n" +

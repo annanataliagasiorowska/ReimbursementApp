@@ -1,6 +1,7 @@
 package com.recruitment.servlet;
 
 import com.recruitment.ProjectFactory;
+import com.recruitment.model.Receipt;
 import com.recruitment.model.ReceiptKind;
 
 import javax.servlet.ServletException;
@@ -10,6 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name="reimbursementServlet", urlPatterns = {"/reimbursement/*"})
 public class ReimbursementServlet extends HttpServlet {
@@ -31,10 +37,13 @@ public class ReimbursementServlet extends HttpServlet {
                 "<html>\n" +
                         "<head><title>" + title + "</title></head>\n" +
                         "<body>\n" +
-                        "<h1 align = \"center\">Add reimbursement</h1>\n" +
-                        "<select id=\"receipt_kind\" name=\"receipt_kind\">");
-        receiptsPage.println("<h1>Choose receipt kind:</h1>\n" +
-                "<ul>\n");
+                        "<h1 align = \"center\">Add receipts</h1>\n" +
+                        "<form method=\"POST\">" +
+                        "<b>Choose receipt kind:</b>\n" +
+                        "<select id=\"receipt_kind\" name=\"receipt_kind\"><br>" +
+                        "<ul>\n"
+                        );
+        receiptsPage.println();
         for (ReceiptKind receiptKind : projectFactory.getExpensesConfig().getReceiptKindSet()
         ) {
             receiptsPage.println("<option value=\"" +
@@ -42,9 +51,92 @@ public class ReimbursementServlet extends HttpServlet {
                     receiptKind.getName() + "</option>");
 
         }
+        receiptsPage.println("</select><br>" +
+                        "<b>Receipt date</b>:\n" +
+                        "<input name=\"receipt_date\"></input><br>\n" +
+                        "<b>Receipt amount</b>:\n" +
+                        "<input name=\"receipt_amount\"></input><br>\n" +
+                        "<b>Description</b>:\n" +
+                        "<input name=\"description\"></input><br>\n" +
+                        "<input type=\"submit\"></input></form>"
+                        );
+
         receiptsPage.println(
-                        "</select>" +
                         "</body></html>");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter reimbursementPage = resp.getWriter();
+        String title = "R page";
+
+        String[] pathInfoParts = req.getPathInfo().split("/");
+        long id = 0;
+        if (pathInfoParts.length == 2) {
+            try {
+                id = Long.parseLong(pathInfoParts[1]);
+            } catch (NumberFormatException e) {
+                // Handle the case when the parameter is not a valid integer
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID parameter");
+            }
+        } else {
+            // Handle the case when the URL format is not as expected
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL format");
+        }
+        String strReceiptKind = req.getParameter("receipt_kind");
+        String strReceiptDate = req.getParameter("receipt_date");
+        String strReceiptAmount = req.getParameter("receipt_amount");
+        String description = req.getParameter("description");
+
+        List<String> errors = new ArrayList<>();
+        ReceiptKind receiptKind = null;
+        LocalDate receiptDate = null;
+        Double receiptAmount = 0.0;
+
+
+        try {
+            receiptKind = new ReceiptKind(strReceiptKind);
+        } catch (NumberFormatException exception) {
+            errors.add("Daily allowance must be double.");
+        }
+
+        if (strReceiptDate != null && !strReceiptDate.isEmpty()) {
+            try {
+                receiptDate = LocalDate.parse(strReceiptDate, DateTimeFormatter.ISO_LOCAL_DATE);
+            } catch (DateTimeParseException exception) {
+                errors.add("Date must be in format \"YYYY-MM-DD\".");
+            }
+        }
+        if (strReceiptAmount != null && !strReceiptAmount.isEmpty()) {
+            try {
+                receiptAmount = Double.parseDouble(strReceiptAmount);
+            } catch (NumberFormatException exception) {
+                errors.add("Reimbursement limit must be double.");
+            }
+        }
+
+        Receipt receipt = new Receipt(ProjectFactory.INSTANCE.getReimbursementService().findReimbursement(id), receiptDate, receiptKind, receiptAmount, description);
+        ProjectFactory.INSTANCE.getReimbursementService().addReceipt(receipt, id);
+        reimbursementPage.println(
+                "<html>\n" +
+                        "<head><title>" + title + "</title></head>\n" +
+                        "<body>\n");
+        if (errors.isEmpty()) {
+            reimbursementPage.println(
+                    "<p>Reimbursement data: " +
+                            projectFactory.getProjectRepository().findReimbursement(id).toString() +
+                            "</p>");
+        } else {
+            reimbursementPage.println(
+                    "<p>Errors:\n" +
+                            "<ul>\n");
+            for (String error: errors
+            ) {
+                reimbursementPage.println("<li>"+ error +"\n");
+            }
+            reimbursementPage.println("</ul>\n");
+        }
+        reimbursementPage.println("</body></html>");
     }
 
 

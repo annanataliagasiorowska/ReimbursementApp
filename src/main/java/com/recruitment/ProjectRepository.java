@@ -38,11 +38,12 @@ public class ProjectRepository {
 
     public void addReceipt(Receipt receipt, long reimbursementId) {
         // just to verify there's corresponding reimbursement defined
-        findReimbursement(reimbursementId);
+        Reimbursement reimbursement = findReimbursement(reimbursementId);
         List<Receipt> receipts = receiptMap.get(reimbursementId);
         if (receipts == null) {
             receipts = new ArrayList<>();
             receiptMap.put(reimbursementId, receipts);
+            reimbursement.setReceiptList(receipts);
         }
         receipts.add(receipt);
     }

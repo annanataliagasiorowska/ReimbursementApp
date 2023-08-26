@@ -24,6 +24,14 @@ public class ReimbursementService {
         return reimbursement;
     }
 
+    public Reimbursement findReimbursement(Long id) {
+        return projectRepository.findReimbursement(id);
+    }
+
+    public void addReceipt(Receipt receipt, long reimbursementId) {
+        projectRepository.addReceipt(receipt, reimbursementId);
+    }
+
     public double tripExpenses(Reimbursement reimbursement) {
         return getTripLengthInDays(reimbursement) * expensesConfig.getDailyAllowance() +
                 reimbursement.getMileage() * expensesConfig.getCarMileage() +

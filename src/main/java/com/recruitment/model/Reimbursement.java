@@ -77,6 +77,7 @@ public class Reimbursement {
     public void setReceiptList(List<Receipt> receiptList) {
         this.receiptList = receiptList;
     }
+
     public void setMileage(long mileage) {
         this.mileage = mileage;
     }
@@ -95,5 +96,17 @@ public class Reimbursement {
 
     public void setMileageLimit(long mileageLimit) {
         this.mileageLimit = mileageLimit;
+    }
+
+    @Override
+    public String toString() {
+        return "Reimbursement{" +
+                "id=" + id +
+                ", user=" + user +
+                ", tripDate=" + tripDate +
+                ", duration=" + duration +
+                ", receiptList=" + receiptList +
+                ", mileage=" + mileage +
+                '}';
     }
 }

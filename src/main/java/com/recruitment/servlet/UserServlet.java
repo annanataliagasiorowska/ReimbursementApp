@@ -93,7 +93,11 @@ public class UserServlet extends HttpServlet {
                         "<head><title>" + title + "</title></head>\n" +
                         "<body>\n");
         if (errors.isEmpty()) {
-            reimbursementService.createReimbursement(new User("Ania"), date, duration, null, carMileage);
+            Reimbursement reimbursement = reimbursementService.createReimbursement(new User("Ania"), date, duration, null, carMileage);
+            reimbursementPage.println(
+                    "<p>Reimbursement data: " +
+                            projectFactory.getProjectRepository().findReimbursement(reimbursement.getId()).toString() +
+                            "</p>");
         } else {
             reimbursementPage.println(
                     "<p>Errors:\n" +

@@ -6,14 +6,15 @@ public class Receipt {
 
     private final Reimbursement reimbursement;
     private LocalDate date;
-    private ReceiptType receiptType;
+//    private ReceiptType receiptType;
+    private ReceiptKind receiptKind;
     private double amount;
     private String description;
 
-    public Receipt(Reimbursement reimbursement, LocalDate date, ReceiptType receiptType, double amount, String description) {
+    public Receipt(Reimbursement reimbursement, LocalDate date, ReceiptKind receiptKind, double amount, String description) {
         this.reimbursement = reimbursement;
         this.date = date;
-        this.receiptType = receiptType;
+        this.receiptKind = receiptKind;
         this.amount = amount;
         this.description = description;
     }
@@ -22,8 +23,8 @@ public class Receipt {
         this.date = date;
     }
 
-    public void setReceiptType(ReceiptType receiptType) {
-        this.receiptType = receiptType;
+    public void setReceiptType(ReceiptKind receiptKind) {
+        this.receiptKind = receiptKind;
     }
 
     public void setAmount(double amount) {
@@ -42,8 +43,8 @@ public class Receipt {
         return date;
     }
 
-    public ReceiptType getReceiptType() {
-        return receiptType;
+    public ReceiptKind getReceiptKind() {
+        return receiptKind;
     }
 
     public double getAmount() {
