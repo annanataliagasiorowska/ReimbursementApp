@@ -59,10 +59,10 @@ public class AdminServlet extends HttpServlet {
         String strDistanceLimit = req.getParameter("distance_limit");
 
         List<String> errors = new ArrayList<>();
-        double dailyAllowance = ProjectFactory.INSTANCE.getExpensesConfig().getDailyAllowance();
-        double refundPerMile = ProjectFactory.INSTANCE.getExpensesConfig().getCarMileage();
-        double reimbursementLimit = ProjectFactory.INSTANCE.getExpensesConfig().getReimbursementLimit();
-        int distanceLimit = ProjectFactory.INSTANCE.getExpensesConfig().getDistanceLimit();
+        double dailyAllowance;
+        double refundPerMile;
+        double reimbursementLimit;
+        int distanceLimit;
         if (strDailyAllowance != null && !strDailyAllowance.isEmpty()) {
             try {
                 dailyAllowance = Double.parseDouble(strDailyAllowance);
@@ -74,7 +74,7 @@ public class AdminServlet extends HttpServlet {
         if (strRefundPerMile != null && !strRefundPerMile.isEmpty()) {
             try {
                 refundPerMile = Double.parseDouble(strRefundPerMile);
-                ProjectFactory.INSTANCE.getExpensesConfig().setCarMileage(refundPerMile);
+                projectFactory.getExpensesConfig().setCarMileage(refundPerMile);
             } catch (NumberFormatException exception) {
                 errors.add("Refund per mile must be float.");
             }
@@ -82,7 +82,7 @@ public class AdminServlet extends HttpServlet {
         if (strReimbursementLimit != null && !strReimbursementLimit.isEmpty()) {
             try {
                 reimbursementLimit = Double.parseDouble(strReimbursementLimit);
-                ProjectFactory.INSTANCE.getExpensesConfig().setReimbursementLimit(reimbursementLimit);
+                projectFactory.getExpensesConfig().setReimbursementLimit(reimbursementLimit);
             } catch (NumberFormatException exception) {
                 errors.add("Reimbursement limit must be double.");
             }
@@ -90,7 +90,7 @@ public class AdminServlet extends HttpServlet {
         if (strDistanceLimit != null && !strDistanceLimit.isEmpty()) {
             try {
                 distanceLimit = Integer.parseInt(strDistanceLimit);
-                ProjectFactory.INSTANCE.getExpensesConfig().setDistanceLimit(distanceLimit);
+                projectFactory.getExpensesConfig().setDistanceLimit(distanceLimit);
             } catch (NumberFormatException exception) {
                 errors.add("Distance limit must be integer.");
             }
@@ -103,10 +103,10 @@ public class AdminServlet extends HttpServlet {
             adminPage.println(
                 "<p>Limits:\n" +
                         "<ul>\n" +
-                    "<li>Daily allowance: " + ProjectFactory.INSTANCE.getExpensesConfig().getDailyAllowance() +"\n" +
-                    "<li>Refund per mile: " + ProjectFactory.INSTANCE.getExpensesConfig().getCarMileage() +"\n" +
-                    "<li>Reimbursement limit: "+ ProjectFactory.INSTANCE.getExpensesConfig().getReimbursementLimit() +"\n" +
-                    "<li>Distance limit: " + ProjectFactory.INSTANCE.getExpensesConfig().getDistanceLimit() +"\n");
+                    "<li>Daily allowance: " + projectFactory.getExpensesConfig().getDailyAllowance() +"\n" +
+                    "<li>Refund per mile: " + projectFactory.getExpensesConfig().getCarMileage() +"\n" +
+                    "<li>Reimbursement limit: " + projectFactory.getExpensesConfig().getReimbursementLimit() +"\n" +
+                    "<li>Distance limit: " + projectFactory.getExpensesConfig().getDistanceLimit() +"\n");
         } else {
             adminPage.println(
                     "<p>Errors:\n" +
