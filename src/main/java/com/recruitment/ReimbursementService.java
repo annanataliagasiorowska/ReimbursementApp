@@ -28,8 +28,9 @@ public class ReimbursementService {
         return projectRepository.findReimbursement(id);
     }
 
-    public void addReceipt(Receipt receipt, long reimbursementId) {
-        projectRepository.addReceipt(receipt, reimbursementId);
+    public boolean addReceipt(Receipt receipt, long reimbursementId) {
+        return projectRepository.addReceipt(receipt, reimbursementId);
+
     }
 
     public double tripExpenses(Reimbursement reimbursement) {

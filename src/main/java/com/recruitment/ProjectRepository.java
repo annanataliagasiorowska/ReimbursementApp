@@ -36,16 +36,23 @@ public class ProjectRepository {
                 .orElseThrow();
     }
 
-    public void addReceipt(Receipt receipt, long reimbursementId) {
+    public boolean addReceipt(Receipt receipt, long reimbursementId) {
         // just to verify there's corresponding reimbursement defined
         Reimbursement reimbursement = findReimbursement(reimbursementId);
-        List<Receipt> receipts = receiptMap.get(reimbursementId);
-        if (receipts == null) {
-            receipts = new ArrayList<>();
-            receiptMap.put(reimbursementId, receipts);
-            reimbursement.setReceiptList(receipts);
+        if ((reimbursement.getTripDate().isBefore(receipt.getDate()) ||
+                reimbursement.getTripDate().isEqual(receipt.getDate())) &&
+                (reimbursement.getTripDate().plusDays(reimbursement.getDuration() - 1).isAfter(receipt.getDate()) ||
+                        reimbursement.getTripDate().plusDays(reimbursement.getDuration() - 1).isEqual(receipt.getDate()))) {
+            List<Receipt> receipts = receiptMap.get(reimbursementId);
+            if (receipts == null) {
+                receipts = new ArrayList<>();
+                receiptMap.put(reimbursementId, receipts);
+                reimbursement.setReceiptList(receipts);
+            }
+            receipts.add(receipt);
+            return true;
         }
-        receipts.add(receipt);
+        return false;
     }
 
 

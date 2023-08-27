@@ -93,11 +93,13 @@ public class ReimbursementServlet extends HttpServlet {
         LocalDate receiptDate = null;
         Double receiptAmount = 0.0;
 
-
-        try {
-            receiptKind = new ReceiptKind(strReceiptKind);
-        } catch (NumberFormatException exception) {
-            errors.add("Daily allowance must be double.");
+        if (projectFactory.getExpensesConfig().getReceiptKindSet().stream()
+                .anyMatch(receiptKind1 -> receiptKind1.getName().equalsIgnoreCase(strReceiptKind))) {
+            try {
+                receiptKind = new ReceiptKind(strReceiptKind);
+            } catch (IllegalArgumentException exception) {
+                errors.add("Choose from the given list");
+            }
         }
 
         if (strReceiptDate != null && !strReceiptDate.isEmpty()) {
@@ -107,34 +109,38 @@ public class ReimbursementServlet extends HttpServlet {
                 errors.add("Date must be in format \"YYYY-MM-DD\".");
             }
         }
+
         if (strReceiptAmount != null && !strReceiptAmount.isEmpty()) {
             try {
                 receiptAmount = Double.parseDouble(strReceiptAmount);
             } catch (NumberFormatException exception) {
-                errors.add("Reimbursement limit must be double.");
+                errors.add("Receipt amount must be double.");
             }
         }
 
-        Receipt receipt = new Receipt(ProjectFactory.INSTANCE.getReimbursementService().findReimbursement(id), receiptDate, receiptKind, receiptAmount, description);
-        ProjectFactory.INSTANCE.getReimbursementService().addReceipt(receipt, id);
+        Receipt receipt = new Receipt(projectFactory.getReimbursementService().findReimbursement(id), receiptDate, receiptKind, receiptAmount, description);
+
         reimbursementPage.println(
                 "<html>\n" +
                         "<head><title>" + title + "</title></head>\n" +
                         "<body>\n");
-        if (errors.isEmpty()) {
+        if (errors.isEmpty() && projectFactory.getReimbursementService().addReceipt(receipt, id)) {
             reimbursementPage.println(
                     "<p>Reimbursement data: " +
                             projectFactory.getProjectRepository().findReimbursement(id).toString() +
                             "</p>");
-        } else {
+        } else if (!errors.isEmpty()) {
             reimbursementPage.println(
                     "<p>Errors:\n" +
                             "<ul>\n");
-            for (String error: errors
+            for (String error : errors
             ) {
-                reimbursementPage.println("<li>"+ error +"\n");
+                reimbursementPage.println("<li>" + error + "\n");
             }
             reimbursementPage.println("</ul>\n");
+        } else {
+            reimbursementPage.println(
+                    "<p>Receipt date must be within reimbursement date.</p>");
         }
         reimbursementPage.println("</body></html>");
     }

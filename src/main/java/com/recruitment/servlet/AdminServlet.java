@@ -42,7 +42,8 @@ public class AdminServlet extends HttpServlet {
                         "<input name=\"reimbursement_limit\"></input><br>\n" +
                         "<b>Distance limit:</b>\n" +
                         "<input name=\"distance_limit\"></input><br>\n" +
-                        "<input type=\"submit\"></input></form>");
+                        "<input type=\"submit\"></input></form>" +
+                        "<a id=\"link\" href=\"http://localhost:8080/receipt-kinds/\">Edit or add receipts kinds</a>");
 
 
         adminPage.println("</ul></body></html>");
@@ -66,7 +67,7 @@ public class AdminServlet extends HttpServlet {
         if (strDailyAllowance != null && !strDailyAllowance.isEmpty()) {
             try {
                 dailyAllowance = Double.parseDouble(strDailyAllowance);
-                ProjectFactory.INSTANCE.getExpensesConfig().setDailyAllowance(dailyAllowance);
+                projectFactory.getExpensesConfig().setDailyAllowance(dailyAllowance);
             } catch (NumberFormatException exception) {
                 errors.add("Daily allowance must be double.");
             }
