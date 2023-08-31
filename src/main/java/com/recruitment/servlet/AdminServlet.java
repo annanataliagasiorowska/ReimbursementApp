@@ -1,6 +1,7 @@
 package com.recruitment.servlet;
 
 import com.recruitment.ProjectFactory;
+import com.recruitment.model.ReceiptKind;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,10 +43,17 @@ public class AdminServlet extends HttpServlet {
                         "<input name=\"reimbursement_limit\"></input><br>\n" +
                         "<b>Distance limit:</b>\n" +
                         "<input name=\"distance_limit\"></input><br>\n" +
+                        "<b>Type receipt kind to delete:</b>\n" +
+                        "<input name=\"receipt_to_delete\"></input><br>\n" +
+                        "<b>Type receipt kind to add:</b>\n" +
+                        "<input name=\"receipt_to_add\"></input><br>\n" +
                         "<input type=\"submit\"></input></form>" +
-                        "<a id=\"link\" href=\"http://localhost:8080/receipt-kinds/\">Edit or add receipts kinds</a>");
-
-
+                        "<a id=\"link\" href=\"http://localhost:8080/receipt-kinds/\">Edit or add receipts kinds</a>" +
+                        "<ul>");
+        for (ReceiptKind receiptKind : projectFactory.getExpensesConfig().getReceiptKindSet()) {
+            adminPage.println(
+                    "<li>" + receiptKind.getName() + "<button>Delete</button></li>");
+        }
         adminPage.println("</ul></body></html>");
     }
 
@@ -58,6 +66,8 @@ public class AdminServlet extends HttpServlet {
         String strRefundPerMile = req.getParameter("refund_per_mile");
         String strReimbursementLimit = req.getParameter("reimbursement_limit");
         String strDistanceLimit = req.getParameter("distance_limit");
+        String receiptToDelete = req.getParameter("receipt_to_delete");
+        String receiptToAdd = req.getParameter("receipt_to_add");
 
         List<String> errors = new ArrayList<>();
         double dailyAllowance;
@@ -95,6 +105,12 @@ public class AdminServlet extends HttpServlet {
             } catch (NumberFormatException exception) {
                 errors.add("Distance limit must be integer.");
             }
+        }
+        if (receiptToDelete != null && !receiptToDelete.isEmpty()) {
+            projectFactory.getReimbursementService().deleteReceiptKind(receiptToDelete);
+        }
+        if (receiptToAdd != null && !receiptToAdd.isEmpty()) {
+            projectFactory.getReimbursementService().addReceiptKind(receiptToAdd);
         }
         adminPage.println(
                 "<html>\n" +
