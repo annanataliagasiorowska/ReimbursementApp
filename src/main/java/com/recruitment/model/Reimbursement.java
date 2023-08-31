@@ -11,8 +11,7 @@ public class Reimbursement {
     private LocalDate endTripDate;
     private List<Receipt> receiptList;
     private long mileage;
-    private double totalReimbursementLimit;
-    private long mileageLimit;
+    private double totalReimbursement;
 
     public Reimbursement(User user, LocalDate tripDate, int duration, List<Receipt> receiptList, long mileage) {
         this.user = user;
@@ -20,6 +19,7 @@ public class Reimbursement {
         this.duration = duration;
         this.receiptList = receiptList;
         this.mileage = mileage;
+        this.endTripDate = tripDate.plusDays(duration - 1);
     }
 
     public Reimbursement(User user, LocalDate tripDate, LocalDate endTripDate, List<Receipt> receiptList, long mileage) {
@@ -82,20 +82,12 @@ public class Reimbursement {
         this.mileage = mileage;
     }
 
-    public double getReimbursementLimit() {
-        return totalReimbursementLimit;
+    public double getTotalReimbursement() {
+        return totalReimbursement;
     }
 
-    public void setReimbursementLimit(double reimbursementLimit) {
-        this.totalReimbursementLimit = reimbursementLimit;
-    }
-
-    public long getMileageLimit() {
-        return mileageLimit;
-    }
-
-    public void setMileageLimit(long mileageLimit) {
-        this.mileageLimit = mileageLimit;
+    public void setTotalReimbursement(double reimbursementLimit) {
+        this.totalReimbursement = reimbursementLimit;
     }
 
     @Override
@@ -105,8 +97,10 @@ public class Reimbursement {
                 ", user=" + user +
                 ", tripDate=" + tripDate +
                 ", duration=" + duration +
+                ", endTripDate=" + endTripDate +
                 ", receiptList=" + receiptList +
                 ", mileage=" + mileage +
+                ", totalReimbursement=" + totalReimbursement +
                 '}';
     }
 }

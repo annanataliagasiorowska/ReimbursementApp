@@ -24,6 +24,13 @@ public class ReimbursementService {
         return reimbursement;
     }
 
+    public double sumReimbursement(Reimbursement reimbursement) {
+        double reimbursementSum = getTripLengthInDays(reimbursement) * expensesConfig.getDailyAllowance() +
+                Math.min(reimbursement.getMileage(), expensesConfig.getDistanceLimit()) * expensesConfig.getCarMileage();
+        reimbursement.setTotalReimbursement(reimbursementSum);
+        return reimbursementSum;
+    }
+
     public Reimbursement findReimbursement(Long id) {
         return projectRepository.findReimbursement(id);
     }
@@ -33,10 +40,11 @@ public class ReimbursementService {
 
     }
 
-    public double tripExpenses(Reimbursement reimbursement) {
-        return getTripLengthInDays(reimbursement) * expensesConfig.getDailyAllowance() +
-                reimbursement.getMileage() * expensesConfig.getCarMileage() +
+    public double sumTripExpenses(Reimbursement reimbursement) {
+        double tripExpenses = sumReimbursement(reimbursement) +
                 reimbursement.getReceiptList().stream().mapToDouble(Receipt::getAmount).sum();
+        reimbursement.setTotalReimbursement(tripExpenses);
+        return tripExpenses;
     }
 
     private int getTripLengthInDays(Reimbursement reimbursement) {
@@ -47,8 +55,6 @@ public class ReimbursementService {
             tripLength = reimbursement.getDuration();
         }
         return (int)tripLength;
-     }
-
-
+    }
 
 }

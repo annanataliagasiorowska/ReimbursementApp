@@ -94,6 +94,8 @@ public class UserServlet extends HttpServlet {
                         "<body>\n");
         if (errors.isEmpty()) {
             Reimbursement reimbursement = reimbursementService.createReimbursement(new User("Ania"), date, duration, null, carMileage);
+//            reimbursement.setTotalReimbursement(reimbursement.getMileage() * projectFactory.getExpensesConfig().getCarMileage());
+            projectFactory.getReimbursementService().sumReimbursement(reimbursement);
             reimbursementPage.println(
                     "<p>Reimbursement data: " +
                             projectFactory.getProjectRepository().findReimbursement(reimbursement.getId()).toString() +

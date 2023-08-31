@@ -125,6 +125,7 @@ public class ReimbursementServlet extends HttpServlet {
                         "<head><title>" + title + "</title></head>\n" +
                         "<body>\n");
         if (errors.isEmpty() && projectFactory.getReimbursementService().addReceipt(receipt, id)) {
+            projectFactory.getReimbursementService().sumTripExpenses(projectFactory.getReimbursementService().findReimbursement(id));
             reimbursementPage.println(
                     "<p>Reimbursement data: " +
                             projectFactory.getProjectRepository().findReimbursement(id).toString() +
@@ -133,10 +134,9 @@ public class ReimbursementServlet extends HttpServlet {
             reimbursementPage.println(
                     "<p>Errors:\n" +
                             "<ul>\n");
-            for (String error : errors
-            ) {
+            for (String error : errors) {
                 reimbursementPage.println("<li>" + error + "\n");
-            }
+                }
             reimbursementPage.println("</ul>\n");
         } else {
             reimbursementPage.println(

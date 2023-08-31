@@ -54,4 +54,14 @@ public class Receipt {
     public String getDescription() {
         return description;
     }
+
+    @Override
+    public String toString() {
+        return "Receipt{" +
+                "date=" + date +
+                ", receiptKind=" + receiptKind +
+                ", amount=" + amount +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

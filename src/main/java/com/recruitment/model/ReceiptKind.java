@@ -19,4 +19,11 @@ public class ReceiptKind {
     public void setReceiptKindLimit(double receiptKindLimit) {
         this.receiptKindLimit = receiptKindLimit;
     }
+
+    @Override
+    public String toString() {
+        return "ReceiptKind{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }
