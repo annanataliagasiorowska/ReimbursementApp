@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 public class ProjectRepository {
     List<Reimbursement> reimbursementList = new ArrayList<>();
     AtomicLong reimbursementId = new AtomicLong();
-    /* Map of receipts for reimbursementId */
+
+    /** Map of receipts for reimbursementId */
     Map<Long, List<Receipt>> receiptMap = new HashMap<>();
 
     public void addReimbursement(Reimbursement reimbursement) {
