@@ -1,14 +1,12 @@
 package com.recruitment;
 
 import com.recruitment.model.Receipt;
-import com.recruitment.model.ReceiptKind;
 import com.recruitment.model.Reimbursement;
 import com.recruitment.model.User;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 public class ReimbursementService {
     private final ExpensesConfig expensesConfig;
@@ -49,22 +47,6 @@ public class ReimbursementService {
         return tripExpenses;
     }
 
-    public boolean checkIfReceiptKindExists(String name) {
-        Optional<ReceiptKind> foundReceipt = expensesConfig.getReceiptKindSet().stream().filter(receiptKind -> receiptKind.getName().equalsIgnoreCase(name)).findAny();
-        return foundReceipt.isPresent();
-    }
-
-    public void deleteReceiptKind(String name) {
-        if (checkIfReceiptKindExists(name)) {
-            expensesConfig.getReceiptKindSet().removeIf(receiptKind -> receiptKind.getName().equalsIgnoreCase(name));
-        }
-    }
-
-    public void addReceiptKind(String name) {
-        if (!checkIfReceiptKindExists(name)) {
-            expensesConfig.getReceiptKindSet().add(new ReceiptKind(name));
-        }
-    }
 
     private int getTripLengthInDays(Reimbursement reimbursement) {
         long tripLength;

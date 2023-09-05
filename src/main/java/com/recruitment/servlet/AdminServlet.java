@@ -43,18 +43,19 @@ public class AdminServlet extends HttpServlet {
                         "<input name=\"reimbursement_limit\"></input><br>\n" +
                         "<b>Distance limit:</b>\n" +
                         "<input name=\"distance_limit\"></input><br>\n" +
-                        "<b>Type receipt kind to delete:</b>\n" +
-                        "<input name=\"receipt_to_delete\"></input><br>\n" +
-                        "<b>Type receipt kind to add:</b>\n" +
-                        "<input name=\"receipt_to_add\"></input><br>\n" +
-                        "<input type=\"submit\"></input></form>" +
-                        "<a id=\"link\" href=\"http://localhost:8080/receipt-kinds/\">Edit or add receipts kinds</a>" +
+
+                        "<p>Edit or add receipts kinds</p>" +
                         "<ul>");
         for (ReceiptKind receiptKind : projectFactory.getExpensesConfig().getReceiptKindSet()) {
             adminPage.println(
-                    "<li>" + receiptKind.getName() + "<button>Delete</button></li>");
+                    "<li>" + receiptKind.getName() + "</li>");
         }
-        adminPage.println("</ul></body></html>");
+        adminPage.println("<b>Type receipt kind to delete:</b>\n" +
+                "<input name=\"receipt_to_delete\"></input><br>\n" +
+                "<b>Type receipt kind to add:</b>\n" +
+                "<input name=\"receipt_to_add\"></input><br>\n" +
+                "<input type=\"submit\"></input></form>" +
+                "</ul></body></html>");
     }
 
     @Override
@@ -77,7 +78,7 @@ public class AdminServlet extends HttpServlet {
         if (strDailyAllowance != null && !strDailyAllowance.isEmpty()) {
             try {
                 dailyAllowance = Double.parseDouble(strDailyAllowance);
-                projectFactory.getExpensesConfig().setDailyAllowance(dailyAllowance);
+                projectFactory.getAdminService().updateDailyAllowance(dailyAllowance);
             } catch (NumberFormatException exception) {
                 errors.add("Daily allowance must be double.");
             }
@@ -85,7 +86,7 @@ public class AdminServlet extends HttpServlet {
         if (strRefundPerMile != null && !strRefundPerMile.isEmpty()) {
             try {
                 refundPerMile = Double.parseDouble(strRefundPerMile);
-                projectFactory.getExpensesConfig().setCarMileage(refundPerMile);
+                projectFactory.getAdminService().updateCarMileage(refundPerMile);
             } catch (NumberFormatException exception) {
                 errors.add("Refund per mile must be float.");
             }
@@ -93,7 +94,7 @@ public class AdminServlet extends HttpServlet {
         if (strReimbursementLimit != null && !strReimbursementLimit.isEmpty()) {
             try {
                 reimbursementLimit = Double.parseDouble(strReimbursementLimit);
-                projectFactory.getExpensesConfig().setReimbursementLimit(reimbursementLimit);
+                projectFactory.getAdminService().updateReimbursementLimit(reimbursementLimit);
             } catch (NumberFormatException exception) {
                 errors.add("Reimbursement limit must be double.");
             }
@@ -107,10 +108,10 @@ public class AdminServlet extends HttpServlet {
             }
         }
         if (receiptToDelete != null && !receiptToDelete.isEmpty()) {
-            projectFactory.getReimbursementService().deleteReceiptKind(receiptToDelete);
+            projectFactory.getAdminService().deleteReceiptKind(receiptToDelete);
         }
         if (receiptToAdd != null && !receiptToAdd.isEmpty()) {
-            projectFactory.getReimbursementService().addReceiptKind(receiptToAdd);
+            projectFactory.getAdminService().addReceiptKind(receiptToAdd);
         }
         adminPage.println(
                 "<html>\n" +

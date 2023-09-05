@@ -10,6 +10,8 @@ public class ProjectFactory {
 
     private ReimbursementService reimbursementService;
 
+    private AdminService adminService;
+
     public ExpensesConfig getExpensesConfig() {
         if (expensesConfig == null)
             expensesConfig = new ExpensesConfig();
@@ -26,5 +28,11 @@ public class ProjectFactory {
         if (reimbursementService == null)
             reimbursementService = new ReimbursementService(getExpensesConfig(), getProjectRepository());
         return reimbursementService;
+    }
+
+    public AdminService getAdminService() {
+        if (adminService == null)
+            adminService = new AdminService(getExpensesConfig());
+        return adminService;
     }
 }
