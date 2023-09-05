@@ -46,8 +46,7 @@ public class UserServlet extends HttpServlet {
                         "<input name=\"duration\"></input><br>\n" +
                         "<b>Car mileage</b>:\n" +
                         "<input name=\"car_mileage\"></input><br>\n" +
-                        "<input name=\"receipt_kind\">" +
-                        "<input type=\"submit\"></input></form>");
+                        "<button type=\"submit\">Send</button></form>");
 
         reimbursementPage.println("<h1>User reimbursements</h1>\n" +
                 "<ul>\n");
