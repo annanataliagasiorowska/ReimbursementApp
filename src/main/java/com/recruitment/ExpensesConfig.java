@@ -38,14 +38,6 @@ public class ExpensesConfig {
         return receiptKindSet;
     }
 
-    public void addReceiptKind(ReceiptKind receiptKind) {
-        receiptKindSet.add(receiptKind);
-    }
-
-    public void removeReceiptKind(ReceiptKind receiptKind) {
-        receiptKindSet.remove(receiptKind);
-    }
-
     public double getReimbursementLimit() {
         return reimbursementLimit;
     }
