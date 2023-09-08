@@ -22,10 +22,17 @@ public class AdminServiceTest {
     void checkIfReceiptKindExists_emptyString_returnFalse() {
         assertFalse(adminService.checkIfReceiptKindExists(""));
     }
+
     @Test
     void addReceiptKind_properString_returnTrue() {
         adminService.addReceiptKind("Boat");
         assertTrue(adminService.checkIfReceiptKindExists("Boat"));
+    }
+
+    @Test
+    void deleteReceiptKind_properString_returnFalse() {
+        adminService.deleteReceiptKind("Train");
+        assertFalse(adminService.checkIfReceiptKindExists("Train"));
     }
 
 }
